@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="app_name">SimpleDemoKit</string>
+	<string name="input">In</string>
+	<string name="output">Out</string>
+	<string name="no_device">Please connect a DemoKit board.</string>
+	
+	<string name="temp_label">Temp</string>
+    <string name="light_labal">light</string>
+    <string name="button_label">Buttons</string>
+    <string name="joystick_label">Joystick</string>
+    <string name="relay_label">Relays</string>
+    <string name="servo_lavel">Servo Motors</string>
+    <string name="led_label">LEDs</string>
+</resources>

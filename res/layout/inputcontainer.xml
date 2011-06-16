@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/tempcontainer"
+        android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="match_parent" android:layout_margin="5dip">
+        <TextView android:text="@string/temp_label" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView3" android:layout_width="wrap_content"></TextView>
+        <TextView android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:id="@+id/tempValue" android:layout_width="wrap_content" android:text="80"></TextView>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/lightcontainer"
+        android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="match_parent" android:layout_margin="5dip">
+        <TextView android:text="@string/light_labal" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView4" android:layout_width="wrap_content"></TextView>
+        <LinearLayout
+            android:id="@+id/lightvaluecontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView android:text="23" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:id="@+id/lightPercentValue"></TextView>
+            <TextView android:text="%" android:id="@+id/textView5" android:layout_width="wrap_content" android:layout_height="wrap_content"></TextView>
+            <TextView android:text="200" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:layout_width="wrap_content" android:layout_marginLeft="10dip" android:id="@+id/lightRawValue"></TextView>
+            <TextView android:text="/1024" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView1" android:layout_width="wrap_content"></TextView>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/buttoncontainer"
+        android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="match_parent" android:layout_margin="5dip">
+        <TextView android:text="@string/button_label" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView2" android:layout_width="wrap_content"></TextView>
+        <LinearLayout
+            android:id="@+id/buttonvaluecontainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView android:text="OFF" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/Button1"></TextView>
+            <TextView android:text="OFF" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/Button2"></TextView>
+            <TextView android:text="OFF" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/Button3"></TextView>
+            <TextView android:text="OFF" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="match_parent" android:layout_weight="1" android:id="@+id/Button4"></TextView>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/joystickcontainer"
+        android:layout_height="wrap_content" android:orientation="vertical" android:layout_width="match_parent" android:layout_margin="5dip">
+        <TextView android:text="@string/joystick_label" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceMedium" android:id="@+id/textView6" android:layout_width="wrap_content"></TextView>
+        <TextView android:text="TextView" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_width="wrap_content" android:id="@+id/joystickValue"></TextView>
+    </LinearLayout>
+    
+</LinearLayout>

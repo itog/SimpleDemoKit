@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="wrap_content"
+	android:orientation="vertical" >
+<!-- 
+	<include layout="@layout/output_servorelay" android:id="@+id/servoRelay_ref"
+		android:layout_height="wrap_content" />
+		 -->
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView2" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/relay_label"></TextView>
+    <LinearLayout
+        android:id="@+id/relaycontainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ToggleButton android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/toggleButton1" android:text="Relay1"></ToggleButton>
+        <ToggleButton android:text="Relay2" android:id="@+id/toggleButton2" android:layout_width="wrap_content" android:layout_height="wrap_content"></ToggleButton>
+    </LinearLayout>
+	<LinearLayout
+	    android:id="@+id/ledcontainer"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" android:orientation="vertical">
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView3" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/servo_lavel"></TextView>
+		<SeekBar android:id="@+id/servoBar1" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
+		<SeekBar android:id="@+id/servoBar2" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
+		<SeekBar android:id="@+id/servoBar3" android:layout_width="match_parent" android:layout_height="wrap_content"></SeekBar>
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/textView1" android:textAppearance="?android:attr/textAppearanceLarge" android:text="@string/led_label"></TextView>
+	    <Spinner android:layout_height="wrap_content" android:id="@+id/ledSpinner" android:layout_width="match_parent" android:entries="@array/leds"></Spinner>
+    	<SeekBar android:id="@+id/ledSeekBarRed" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
+    	<SeekBar android:id="@+id/ledSeekBarGreen" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
+    	<SeekBar android:id="@+id/ledSeekBarBlue" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
+	</LinearLayout>
+</LinearLayout>
+
