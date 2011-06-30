@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.itog_lab.android.sample.SimpleDemoKit;
+package com.itog_lab.android.accessory;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,16 +27,18 @@ import android.util.Log;
  * USB service and springboards to the main Gallery activity
  */
 public final class UsbAccessoryActivity extends Activity {
-
 	static final String TAG = "UsbAccessoryActivity";
+	
+	static final String TARGET_PACKAGE = "com.itog_lab.android.sample.demokit";
+	static final String TARGET_CLASS = "com.itog_lab.android.sample.demokit.SimpleDemoKit"; 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-//		Intent intent = DemoKitActivity.createIntent(this);
-		Intent intent = new Intent(this, SimpleDemoKit.class);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		Intent intent = new Intent();
+		intent.setComponent(new ComponentName(TARGET_PACKAGE, TARGET_CLASS));
+		
 		try {
 			startActivity(intent);
 		} catch (ActivityNotFoundException e) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.itog_lab.android.sample.SimpleDemoKit"
+      package="com.itog_lab.android.sample.demokit"
       android:versionCode="1"
       android:versionName="1.0">
     <uses-sdk android:minSdkVersion="10" />
@@ -14,7 +14,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="UsbAccessoryActivity" android:label="DemoKit"
+        <activity android:name="com.itog_lab.android.accessory.UsbAccessoryActivity" android:label="SimpleDemoKit"
 			android:taskAffinity="" android:launchMode="singleInstance">
 			<intent-filter>
 				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />

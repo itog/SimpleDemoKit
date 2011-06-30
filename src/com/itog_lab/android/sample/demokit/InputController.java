@@ -1,13 +1,15 @@
-package com.itog_lab.android.sample.SimpleDemoKit;
+package com.itog_lab.android.sample.demokit;
 
 import java.text.DecimalFormat;
+
+import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
 public class InputController {
-	protected OpenAccessoryBase mHostActivity;
+	protected Activity mHostActivity;
 	
 	private TextView mTemperature;
 	private TextView mLightView;
@@ -25,15 +27,8 @@ public class InputController {
 	protected Resources getResources() {
 		return mHostActivity.getResources();
 	}
-
 	
-	void accessoryAttached() {
-		//TODO
-		// initial value is fixed android:text="off"
-		// should check the value
-	}
-	
-	InputController(OpenAccessoryBase hostActivity) {
+	InputController(Activity hostActivity) {
 		mHostActivity = hostActivity;
 		mTemperature = (TextView) findViewById(R.id.tempValue);
 		mLightView = (TextView) findViewById(R.id.lightPercentValue);
@@ -98,27 +93,6 @@ public class InputController {
 	}
 
 	public void joystickMoved(int x, int y) {
-		//mJoystickView.setPosition(x, y);
 		mJoystickView.setText(x + ", " + y);
-	}
-
-	public void onTemperature(int temperature) {
-		setTemperature(temperature);
-	}
-
-	public void onLightChange(int lightValue) {
-		setLightValue(lightValue);
-	}
-
-	public void onSwitchStateChange(int switchIndex, Boolean switchState) {
-		switchStateChanged(switchIndex, switchState);
-	}
-
-	public void onButton(Boolean buttonState) {
-		joystickButtonSwitchStateChanged(buttonState);
-	}
-
-	public void onStickMoved(int x, int y) {
-		joystickMoved(x, y);
 	}
 }

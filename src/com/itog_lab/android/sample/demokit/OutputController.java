@@ -1,9 +1,11 @@
-package com.itog_lab.android.sample.SimpleDemoKit;
+package com.itog_lab.android.sample.demokit;
 
 import android.app.Activity;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -13,18 +15,20 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 public class OutputController {
 	private static final String TAG = "OutputController";
-	private Activity mHostActivity;
 	
 	private ToggleButton relayButtons[];
 	private SeekBar servoSeekBars[];
 	private Spinner ledSpinner;
 	private SeekBar ledSeekBars[];
-	
-	ADKCommandSender mAdkSender;
+	private Button relaySequenceButton;
+	private Button servoSequenceButton;
+
+	private Activity hostActivity;
+	private ADKCommandSender adkSender;
 	
 	OutputController(Activity activity, ADKCommandSender adk) {
-		mHostActivity = activity;
-		mAdkSender = adk;
+		hostActivity = activity;
+		adkSender = adk;
 		
 		relayButtons = new ToggleButton[2];
 		relayButtons[0] = (ToggleButton)findViewById(R.id.toggleButton1);
@@ -55,28 +59,42 @@ public class OutputController {
 			ledSeekBars[i].setTag(Integer.valueOf(i));
 		}
 		ledSpinner = (Spinner)findViewById(R.id.ledSpinner);
+		
+		relaySequenceButton = (Button)findViewById(R.id.relayButton);
+		relaySequenceButton.setOnClickListener(buttonListener);
+		servoSequenceButton = (Button)findViewById(R.id.servoButton);
+		servoSequenceButton.setOnClickListener(buttonListener);
 	}
 	
-	protected View findViewById(int id) {
-		return mHostActivity.findViewById(id);
+	OnClickListener buttonListener = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			switch (v.getId()) {
+			case R.id.relayButton:
+				adkSender.relaySequence();
+				break;
+			case R.id.servoButton:
+				adkSender.servoSequence();
+				break;
+			default:
+				break;
+			}
+		}
+		
+	};
+	
+	private View findViewById(int id) {
+		return hostActivity.findViewById(id);
 	}
 
-	protected Resources getResources() {
-		return mHostActivity.getResources();
-	}
-
-	void accessoryAttached() {
-		onAccesssoryAttached();
-	}
-
-	protected void onAccesssoryAttached() {
-		//TODO set initial values
+	private Resources getResources() {
+		return hostActivity.getResources();
 	}
 
 	private OnCheckedChangeListener relayListener = new OnCheckedChangeListener() {
 		@Override
 		public void onCheckedChanged(CompoundButton view, boolean isChecked) {
-			mAdkSender.sendCommand(ADKCommandSender.RELAY_COMMAND, (byte)(((Integer)view.getTag()).intValue()), isChecked ? 1 : 0);
+			adkSender.relay((byte)(((Integer)view.getTag()).intValue()), (byte) (isChecked ? 1 : 0));
 		}
 	};
 	
@@ -85,7 +103,7 @@ public class OutputController {
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			int i = (Integer)seekBar.getTag();
 			byte target = (byte) (i + 0x10);
-			mAdkSender.sendCommand(ADKCommandSender.LED_SERVO_COMMAND, target, progress);
+			adkSender.sendLEDcommand(target, (byte)progress);
 		}
 
 		@Override
@@ -103,9 +121,9 @@ public class OutputController {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			int i = (Integer)seekBar.getTag();
-			if (mAdkSender != null) {
+			if (adkSender != null) {
 				byte commandTarget = (byte) ((Integer.valueOf((String)ledSpinner.getSelectedItem()) - 1) * 3 + i);
-				mAdkSender.sendCommand(ADKCommandSender.LED_SERVO_COMMAND, commandTarget, (byte) progress);
+				adkSender.sendLEDcommand(commandTarget, (byte)progress);
 			}
 		}
 	

@@ -28,5 +28,13 @@
     	<SeekBar android:id="@+id/ledSeekBarGreen" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
     	<SeekBar android:id="@+id/ledSeekBarBlue" android:layout_height="wrap_content" android:layout_width="match_parent"></SeekBar>
 	</LinearLayout>
+	<TextView android:id="@+id/textView4" android:layout_height="wrap_content" android:text="Sequences" android:layout_width="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+	<LinearLayout
+	    android:id="@+id/sequencebuttoncontainer"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content" android:orientation="horizontal">
+	    <Button android:text="Relay" android:id="@+id/relayButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    	<Button android:text="Servo" android:id="@+id/servoButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+	</LinearLayout>
 </LinearLayout>
 

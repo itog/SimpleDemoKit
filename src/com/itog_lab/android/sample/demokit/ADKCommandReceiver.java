@@ -1,8 +1,7 @@
-package com.itog_lab.android.sample.SimpleDemoKit;
+package com.itog_lab.android.sample.demokit;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.itog_lab.android.accessory.AccessoryListener;
+import com.itog_lab.android.accessory.OpenAccessory;
 
 import android.os.Handler;
 import android.os.Message;
@@ -10,7 +9,7 @@ import android.util.Log;
 import android.widget.SeekBar;
 
 
-public class ADKCommandReceiver implements Runnable {
+public class ADKCommandReceiver implements AccessoryListener {
 	static final String TAG = "ADKCommandReceiver";
 	
 	static final int MESSAGE_SWITCH = 1;
@@ -18,11 +17,12 @@ public class ADKCommandReceiver implements Runnable {
 	static final int MESSAGE_LIGHT = 3;
 	static final int MESSAGE_JOY = 4;
 
-	private InputStream mInputStream;	
 	private InputController mInputController;
 	
-	private boolean isRunning;
-
+	public ADKCommandReceiver(OpenAccessory acc) {
+		acc.setListener(this);
+	}
+	
 	protected class SwitchMsg {
 		private byte sw;
 		private byte state;
@@ -80,75 +80,6 @@ public class ADKCommandReceiver implements Runnable {
 
 		public int getY() {
 			return y;
-		}
-	}
-
-	public void stopRunningThread() {
-		isRunning = false;
-	}
-	
-	public void run() {
-		int ret = 0;
-		byte[] buffer = new byte[16384];
-		int i;
-
-		isRunning = true;
-		while (ret >= 0 && isRunning) {
-			try {
-				ret = mInputStream.read(buffer);
-			} catch (IOException e) {
-				break;
-			}
-
-			i = 0;
-			while (i < ret) {
-				int len = ret - i;
-
-				switch (buffer[i]) {
-				case 0x1:
-					if (len >= 3) {
-						Message m = Message.obtain(mHandler, MESSAGE_SWITCH);
-						m.obj = new SwitchMsg(buffer[i + 1], buffer[i + 2]);
-						mHandler.sendMessage(m);
-					}
-					i += 3;
-					break;
-
-				case 0x4:
-					if (len >= 3) {
-						Message m = Message.obtain(mHandler, MESSAGE_TEMPERATURE);
-						m.obj = new TemperatureMsg(composeInt(buffer[i + 1],
-								buffer[i + 2]));
-						mHandler.sendMessage(m);
-					}
-					i += 3;
-					break;
-
-				case 0x5:
-					if (len >= 3) {
-						Message m = Message.obtain(mHandler, MESSAGE_LIGHT);
-						m.obj = new LightMsg(composeInt(buffer[i + 1], buffer[i + 2]));
-						mHandler.sendMessage(m);
-					}
-					i += 3;
-					break;
-
-				case 0x6:
-					if (len >= 3) {
-						Message m = Message.obtain(mHandler, MESSAGE_JOY);
-						m.obj = new JoyMsg(buffer[i + 1], buffer[i + 2]);
-						mHandler.sendMessage(m);
-					}
-					i += 3;
-					break;
-
-				default:
-					Log.d(OpenAccessoryBase.TAG, "unknown msg: " + buffer[i]);
-					i = len;
-					break;
-				}
-			}
-			Log.v(TAG, "running");
 		}
 	}
 	
@@ -230,7 +161,56 @@ public class ADKCommandReceiver implements Runnable {
 		mInputController = mInputController2;
 	}
 
-	public void setInputStream(FileInputStream mInputStream2) {
-		mInputStream = mInputStream2;
+	@Override
+	public void onAccessoryMessage(byte[] buffer) {
+		int i = 0;
+		int ret = buffer.length;
+		while (i < ret) {
+			int len = ret - i;
+
+			switch (buffer[i]) {
+			case 0x1:
+				if (len >= 3) {
+					Message m = Message.obtain(mHandler, MESSAGE_SWITCH);
+					m.obj = new SwitchMsg(buffer[i + 1], buffer[i + 2]);
+					mHandler.sendMessage(m);
+				}
+				i += 3;
+				break;
+
+			case 0x4:
+				if (len >= 3) {
+					Message m = Message.obtain(mHandler, MESSAGE_TEMPERATURE);
+					m.obj = new TemperatureMsg(composeInt(buffer[i + 1],
+							buffer[i + 2]));
+					mHandler.sendMessage(m);
+				}
+				i += 3;
+				break;
+
+			case 0x5:
+				if (len >= 3) {
+					Message m = Message.obtain(mHandler, MESSAGE_LIGHT);
+					m.obj = new LightMsg(composeInt(buffer[i + 1], buffer[i + 2]));
+					mHandler.sendMessage(m);
+				}
+				i += 3;
+				break;
+
+			case 0x6:
+				if (len >= 3) {
+					Message m = Message.obtain(mHandler, MESSAGE_JOY);
+					m.obj = new JoyMsg(buffer[i + 1], buffer[i + 2]);
+					mHandler.sendMessage(m);
+				}
+				i += 3;
+				break;
+
+			default:
+				Log.d(TAG, "unknown msg: " + buffer[i]);
+				i = len;
+				break;
+			}
+		}
 	}
 }
