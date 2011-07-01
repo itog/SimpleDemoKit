@@ -34,6 +34,9 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 		if (openAccessory.isConnected()) {			
 			adkReceiver = new ADKCommandReceiver(openAccessory);
 			adkSender = new ADKCommandSender(openAccessory);
+			inputController = new InputController(this);
+			adkReceiver.setInputController(inputController);
+			outputController = new OutputController(this, adkSender);
 			showControls();
 		} else {
 			hideControls();
@@ -48,11 +51,6 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 		outputContainer = (LinearLayout) findViewById(R.id.outputContainer);
 		inputLabel.setOnClickListener(this);
 		outputLabel.setOnClickListener(this);
-
-		inputController = new InputController(this);
-		adkReceiver.setInputController(inputController);
-		
-		outputController = new OutputController(this, adkSender);
 		
 		showTabContents(true);
 	}
@@ -63,8 +61,7 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 			adkReceiver.removeInputController();
 		}
 		inputController = null;
-		outputController = null;
-		
+		outputController = null;		
 	}
 
 	private void showTabContents(Boolean showInput) {
