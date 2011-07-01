@@ -31,13 +31,13 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 
 		openAccessory = new OpenAccessory();
 		openAccessory.open(this);
-		if (openAccessory.isConnected()) {			
+		if (openAccessory.isConnected()) {
+			showControls();
 			adkReceiver = new ADKCommandReceiver(openAccessory);
 			adkSender = new ADKCommandSender(openAccessory);
 			inputController = new InputController(this);
 			adkReceiver.setInputController(inputController);
 			outputController = new OutputController(this, adkSender);
-			showControls();
 		} else {
 			hideControls();
 		}				
