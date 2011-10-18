@@ -1,9 +1,22 @@
-package com.itog_lab.android.sample.demokit;
+/*
+ * Copyright (C) 2011 PIGMAL LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.pigmal.android.ex.accessory;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +28,14 @@ import android.widget.ToggleButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
+import com.pigmal.android.accessory.Accessory;
+import com.pigmal.android.util.Logger;
+
+/**
+ * Control the user input and output to ADK
+ * @author itog
+ *
+ */
 public class OutputController {
 	private static final String TAG = "OutputController";
 	
@@ -24,15 +45,13 @@ public class OutputController {
 	private SeekBar ledSeekBars[];
 	private Button relaySequenceButton;
 	private Button servoSequenceButton;
-
-	private Button serviceButton;
 	
 	private Activity hostActivity;
 	private ADKCommandSender adkSender;
 	
-	OutputController(Activity activity, ADKCommandSender adk) {
+	OutputController(Activity activity, Accessory acc) {
 		hostActivity = activity;
-		adkSender = adk;
+		adkSender = new ADKCommandSender(acc);
 		
 		relayButtons = new ToggleButton[2];
 		relayButtons[0] = (ToggleButton)findViewById(R.id.toggleButton1);
@@ -59,9 +78,9 @@ public class OutputController {
 		ledSeekBars[2] = (SeekBar)findViewById(R.id.ledSeekBarBlue);
 		
 		for (int i = 0 ; i < 3; i++) {
-			ledSeekBars[i].setOnSeekBarChangeListener(ledListener);
 			ledSeekBars[i].setMax(255);
 			ledSeekBars[i].setTag(Integer.valueOf(i));
+			ledSeekBars[i].setOnSeekBarChangeListener(ledListener);
 		}
 		ledSpinner = (Spinner)findViewById(R.id.ledSpinner);
 		
@@ -69,9 +88,6 @@ public class OutputController {
 		relaySequenceButton.setOnClickListener(buttonListener);
 		servoSequenceButton = (Button)findViewById(R.id.servoButton);
 		servoSequenceButton.setOnClickListener(buttonListener);
-		
-		serviceButton = (Button)findViewById(R.id.serviceButton);
-		serviceButton.setOnClickListener(buttonListener);
 	}
 	
 	OnClickListener buttonListener = new OnClickListener() {
@@ -84,12 +100,6 @@ public class OutputController {
 			case R.id.servoButton:
 				adkSender.servoSequence();
 				break;
-			case R.id.serviceButton:
-				Log.v(TAG, "service button clicked");
-		        Intent service = new Intent(hostActivity, MessageHandleService.class);
-		        //service.putExtra("cmd", "");
-		        hostActivity.startService(service);
-		        break;
 			default:
 				break;
 			}
@@ -101,9 +111,9 @@ public class OutputController {
 		return hostActivity.findViewById(id);
 	}
 
-	private Resources getResources() {
-		return hostActivity.getResources();
-	}
+//	private Resources getResources() {
+//		return hostActivity.getResources();
+//	}
 
 	private OnCheckedChangeListener relayListener = new OnCheckedChangeListener() {
 		@Override
@@ -115,7 +125,9 @@ public class OutputController {
 	private OnSeekBarChangeListener servoListener = new OnSeekBarChangeListener() {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			adkSender.sendServoCommand((Integer)seekBar.getTag(), progress);
+			if (fromUser == true) {
+				adkSender.sendServoCommand((Integer)seekBar.getTag(), progress);
+			}
 		}
 
 		@Override
@@ -132,6 +144,7 @@ public class OutputController {
 	private OnSeekBarChangeListener ledListener = new OnSeekBarChangeListener() {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+			Logger.v("seekbar = " + seekBar);
 			int i = (Integer)seekBar.getTag();
 			if (adkSender != null) {
 				adkSender.sendLEDcommand(Integer.valueOf((String)ledSpinner.getSelectedItem()), i, progress);

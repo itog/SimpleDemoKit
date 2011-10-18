@@ -1,10 +1,23 @@
-package com.itog_lab.android.sample.demokit;
+/*
+ * Copyright (C) 2011 PIGMAL LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import com.itog_lab.android.accessory.OpenAccessory;
-import android.app.Activity;
+package com.pigmal.android.ex.accessory;
+
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,49 +25,54 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class SimpleDemoKit extends Activity implements OnClickListener {
-	static final String TAG = "SimpleDemoKit";
+import com.pigmal.android.accessory.AccessoryBaseActivity;
+import com.pigmal.android.util.Logger;
 
+
+public class SimpleDemoKit extends AccessoryBaseActivity implements OnClickListener {
+	private ADKCommandReceiver mReceiver;
+	
 	private TextView inputLabel;
 	private TextView outputLabel;
 	private LinearLayout inputContainer;
 	private LinearLayout outputContainer;
+	@SuppressWarnings("unused")
+	private OutputController mOutputController;
+	private InputController mInputController;
 
-	private OpenAccessory openAccessory;
-	private InputController inputController;
-	private OutputController outputController;
-	private ADKCommandSender adkSender;
-	private ADKCommandReceiver adkReceiver;
-	
+	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		openAccessory = new OpenAccessory();
-		openAccessory.open(this);
-		if (openAccessory.isConnected()) {
+		
+		mReceiver = new ADKCommandReceiver();
+		mOpenAccessory.setListener(mReceiver);
+		
+		if (mOpenAccessory.isConnected()) {
 			showControls();
-			adkReceiver = new ADKCommandReceiver(openAccessory);
-			adkSender = new ADKCommandSender(openAccessory);
-			inputController = new InputController(this);
-			adkReceiver.setInputController(inputController);
-			outputController = new OutputController(this, adkSender);
 		} else {
 			hideControls();
-		}				
+		} 
 	}
-	
+
 	@Override
-	protected void onPause() {
-		// TODO Auto-generated method stub
+	public void onDestroy() {
+		mOpenAccessory.removeListener();
+		super.onDestroy();
+	}
+
+	@Override
+	public void onPause() {
 		super.onPause();
 	}
 
 	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
+	public void onResume() {
 		super.onResume();
 	}
-	
+
+	/**
+	 * Show controls on the display
+	 */
 	private void showControls() {
 		setContentView(R.layout.main);
 		inputLabel = (TextView) findViewById(R.id.inputLabel);
@@ -65,17 +83,26 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 		outputLabel.setOnClickListener(this);
 		
 		showTabContents(true);
+		
+		mOutputController = new OutputController(this, mOpenAccessory);
+		mInputController = new InputController(this);
+		mReceiver.setInputController(mInputController);
 	}
 
+	/**
+	 * Hide all controlls
+	 */
 	private void hideControls() {
 		setContentView(R.layout.no_device);
-		if (adkReceiver != null) {
-			adkReceiver.removeInputController();
-		}
-		inputController = null;
-		outputController = null;		
+		mReceiver.removeInputController();
+		mInputController = null;
+		mOutputController = null;		
 	}
 
+	/**
+	 * Swich the display to show input or output
+	 * @param showInput
+	 */
 	private void showTabContents(Boolean showInput) {
 		if (showInput) {
 			inputContainer.setVisibility(View.VISIBLE);
@@ -89,7 +116,7 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 			outputLabel.setBackgroundColor(Color.DKGRAY);
 		}
 	}
-
+	
 	public void onClick(View v) {
 		int vId = v.getId();
 		switch (vId) {
@@ -103,13 +130,23 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 	}
 	
 	@Override
+	protected void onUsbAtached() {
+		Logger.v("onUsbAtached");
+		showControls();
+	}
+	
+	@Override
+	protected void onUsbDetached() {
+		Logger.v("onUsbDetached");
+		hideControls();
+	}
+	
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getTitle().equals("Simulate")) {
 			showControls();
 		} else if (item.getTitle().equals("Quit")) {
-			openAccessory.close();
 			finish();
-			System.exit(0);
 		}
 		return true;
 	}

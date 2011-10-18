@@ -1,33 +1,75 @@
-package com.itog_lab.android.sample.demokit;
+/*
+ * Copyright (C) 2011 PIGMAL LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import com.itog_lab.android.accessory.OpenAccessory;
+package com.pigmal.android.ex.accessory;
+
+import com.pigmal.android.accessory.Accessory;
+
 import android.util.Log;
 
+/**
+ * Send command to RT-ADK & RT-ADS hardware
+ * @author itog
+ *
+ */
 public class ADKCommandSender {
 	static final String TAG = "ADKCommandSender";
 	
 	public static final byte LED_SERVO_COMMAND = 2;
 	public static final byte RELAY_COMMAND = 3;
 	
-	private OpenAccessory openAccessory;
+	private Accessory openAccessory;
 	
 	private boolean isRelayRunning = false;
 	private boolean isServoRunning = false;
 	
-	public ADKCommandSender(OpenAccessory acc) {
+	public ADKCommandSender(Accessory acc) {
 		openAccessory = acc;
 	}
 	
+	/**
+	 * Send a command to ADK
+	 * @param command
+	 * @param target
+	 * @param value
+	 */
+	private void sendCommand(byte command, byte target, int value) {
+		byte[] buffer = new byte[3];
+		if (value > 255)
+			value = 255;
+
+		buffer[0] = command;
+		buffer[1] = target;
+		buffer[2] = (byte) value;
+		if (buffer[1] != -1) {
+			openAccessory.write(buffer);
+		}
+	}
+
+	
 	public void sendServoCommand(int target, int value) {
-		openAccessory.sendCommand(LED_SERVO_COMMAND, (byte) (target + 0x10), (byte)value);
+		sendCommand(LED_SERVO_COMMAND, (byte) (target + 0x10), (byte)value);
 	}
 	
 	public void sendLEDcommand(int target, int color_index, int value) {
-		openAccessory.sendCommand(LED_SERVO_COMMAND, (byte) ((target - 1) * 3 + color_index), (byte)value);
+		sendCommand(LED_SERVO_COMMAND, (byte) ((target - 1) * 3 + color_index), (byte)value);
 	}
 	
 	public void relay(byte target, byte value) {
-		openAccessory.sendCommand(RELAY_COMMAND, target, value);
+		sendCommand(RELAY_COMMAND, target, value);
 	}
 
 	/**
@@ -46,7 +88,7 @@ public class ADKCommandSender {
 				for (int i = 0; i < 10; i++) {
 					Log.v(TAG, "relay thread is running " + onoff);
 					onoff = (byte) (onoff == 0 ? 1 : 0);
-					openAccessory.sendCommand((byte)3, (byte)0, onoff);
+					sendCommand((byte)3, (byte)0, onoff);
 					try {
 						Thread.sleep(1 * 1000);
 					} catch (InterruptedException e) {
@@ -68,18 +110,18 @@ public class ADKCommandSender {
 				byte target = (byte) (0 + 0x10);
 				isServoRunning = true;
 
-				openAccessory.sendCommand(LED_SERVO_COMMAND, target, 100);
+				sendCommand(LED_SERVO_COMMAND, target, 100);
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				openAccessory.sendCommand(LED_SERVO_COMMAND, target, 127);
+				sendCommand(LED_SERVO_COMMAND, target, 127);
 				byte progress = 0;
 				for (int i = 0; i < 4; i++) {
 					Log.v(TAG, "thread is running " + progress);
 					progress = (byte) (progress == 30 ? 150 : 30);
-					openAccessory.sendCommand(LED_SERVO_COMMAND, target, progress);
+					sendCommand(LED_SERVO_COMMAND, target, progress);
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException e) {

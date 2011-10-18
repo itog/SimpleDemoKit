@@ -1,27 +1,49 @@
-package com.itog_lab.android.sample.demokit;
+/*
+ * Copyright (C) 2011 PIGMAL LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import com.itog_lab.android.accessory.AccessoryListener;
-import com.itog_lab.android.accessory.OpenAccessory;
+package com.pigmal.android.ex.accessory;
 
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.widget.SeekBar;
 
+import com.pigmal.android.accessory.AccessoryListener;
+import com.pigmal.android.util.DebugUtil;
+import com.pigmal.android.util.Logger;
 
+/**
+ * Receive message from ADK and display on the device display
+ * @author itog
+ *
+ */
 public class ADKCommandReceiver implements AccessoryListener {
-	static final String TAG = "ADKCommandReceiver";
-	
-	static final int MESSAGE_SWITCH = 1;
-	static final int MESSAGE_TEMPERATURE = 2;
-	static final int MESSAGE_LIGHT = 3;
-	static final int MESSAGE_JOY = 4;
+	/**
+	 * message ids defined in RT-ADK firmware
+	 */
+	public static final int TYPE_SWITCH = 0x01;
+	public static final int TYPE_TEMPERATURE = 0x04;
+	public static final int TYPE_LIGHT = 0x05;
+	public static final int TYPE_JOYSTICK = 0x06;
+
+	private static final int MESSAGE_SWITCH = 1;
+	private static final int MESSAGE_TEMPERATURE = 2;
+	private static final int MESSAGE_LIGHT = 3;
+	private static final int MESSAGE_JOY = 4;
 
 	private InputController mInputController;
-	
-	public ADKCommandReceiver(OpenAccessory acc) {
-		acc.setListener(this);
-	}
 	
 	protected class SwitchMsg {
 		private byte sw;
@@ -150,18 +172,26 @@ public class ADKCommandReceiver implements AccessoryListener {
 		}
 	}
 
+	/**
+	 * Connect input controller so that the sensor value
+	 * will be shown on the display
+	 * @param controller
+	 */
+	public void setInputController(InputController controller) {
+		mInputController = controller;
+	}
+	/**
+	 * Disconnect input controller then stop to display
+	 */
 	public void removeInputController() {
 		mInputController = null;		
-	}
-
-	public void setInputController(InputController mInputController2) {
-		mInputController = mInputController2;
 	}
 
 	@Override
 	public void onAccessoryMessage(byte[] buffer) {
 		int i = 0;
 		int ret = buffer.length;
+		
 		while (i < ret) {
 			int len = ret - i;
 
@@ -204,7 +234,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 				break;
 
 			default:
-				Log.d(TAG, "unknown msg: " + buffer[i]);
+				Logger.d("unknown msg: " + buffer[i]);
 				i = len;
 				break;
 			}
