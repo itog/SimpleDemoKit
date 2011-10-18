@@ -1,6 +1,8 @@
 package com.itog_lab.android.sample.demokit;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.View;
@@ -23,6 +25,8 @@ public class OutputController {
 	private Button relaySequenceButton;
 	private Button servoSequenceButton;
 
+	private Button serviceButton;
+	
 	private Activity hostActivity;
 	private ADKCommandSender adkSender;
 	
@@ -34,6 +38,7 @@ public class OutputController {
 		relayButtons[0] = (ToggleButton)findViewById(R.id.toggleButton1);
 		relayButtons[1] = (ToggleButton)findViewById(R.id.toggleButton2);
 		for (int i = 0; i < relayButtons.length; i++) {
+			Log.v(TAG, "relay toggle i = " + i);
 			relayButtons[i].setOnCheckedChangeListener(relayListener);
 			relayButtons[i].setTag(Integer.valueOf(i));
 		}
@@ -64,6 +69,9 @@ public class OutputController {
 		relaySequenceButton.setOnClickListener(buttonListener);
 		servoSequenceButton = (Button)findViewById(R.id.servoButton);
 		servoSequenceButton.setOnClickListener(buttonListener);
+		
+		serviceButton = (Button)findViewById(R.id.serviceButton);
+		serviceButton.setOnClickListener(buttonListener);
 	}
 	
 	OnClickListener buttonListener = new OnClickListener() {
@@ -76,6 +84,12 @@ public class OutputController {
 			case R.id.servoButton:
 				adkSender.servoSequence();
 				break;
+			case R.id.serviceButton:
+				Log.v(TAG, "service button clicked");
+		        Intent service = new Intent(hostActivity, MessageHandleService.class);
+		        //service.putExtra("cmd", "");
+		        hostActivity.startService(service);
+		        break;
 			default:
 				break;
 			}
@@ -101,9 +115,7 @@ public class OutputController {
 	private OnSeekBarChangeListener servoListener = new OnSeekBarChangeListener() {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			int i = (Integer)seekBar.getTag();
-			byte target = (byte) (i + 0x10);
-			adkSender.sendLEDcommand(target, (byte)progress);
+			adkSender.sendServoCommand((Integer)seekBar.getTag(), progress);
 		}
 
 		@Override
@@ -122,8 +134,7 @@ public class OutputController {
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			int i = (Integer)seekBar.getTag();
 			if (adkSender != null) {
-				byte commandTarget = (byte) ((Integer.valueOf((String)ledSpinner.getSelectedItem()) - 1) * 3 + i);
-				adkSender.sendLEDcommand(commandTarget, (byte)progress);
+				adkSender.sendLEDcommand(Integer.valueOf((String)ledSpinner.getSelectedItem()), i, progress);
 			}
 		}
 	
@@ -138,4 +149,4 @@ public class OutputController {
 		}
 	};
 }
-	
+

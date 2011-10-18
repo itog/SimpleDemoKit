@@ -84,10 +84,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 	}
 	
 	private int composeInt(byte hi, byte lo) {
-		int val = (int) hi & 0xff;
-		val *= 256;
-		val += (int) lo & 0xff;
-		return val;
+		return ((hi & 0xff) << 8) + (lo & 0xff);
 	}
 	
 	Handler mHandler = new Handler() {
@@ -169,7 +166,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 			int len = ret - i;
 
 			switch (buffer[i]) {
-			case 0x1:
+			case TYPE_SWITCH:
 				if (len >= 3) {
 					Message m = Message.obtain(mHandler, MESSAGE_SWITCH);
 					m.obj = new SwitchMsg(buffer[i + 1], buffer[i + 2]);
@@ -178,7 +175,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 				i += 3;
 				break;
 
-			case 0x4:
+			case TYPE_TEMPERATURE:
 				if (len >= 3) {
 					Message m = Message.obtain(mHandler, MESSAGE_TEMPERATURE);
 					m.obj = new TemperatureMsg(composeInt(buffer[i + 1],
@@ -188,7 +185,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 				i += 3;
 				break;
 
-			case 0x5:
+			case TYPE_LIGHT:
 				if (len >= 3) {
 					Message m = Message.obtain(mHandler, MESSAGE_LIGHT);
 					m.obj = new LightMsg(composeInt(buffer[i + 1], buffer[i + 2]));
@@ -197,7 +194,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 				i += 3;
 				break;
 
-			case 0x6:
+			case TYPE_JOYSTICK:
 				if (len >= 3) {
 					Message m = Message.obtain(mHandler, MESSAGE_JOY);
 					m.obj = new JoyMsg(buffer[i + 1], buffer[i + 2]);

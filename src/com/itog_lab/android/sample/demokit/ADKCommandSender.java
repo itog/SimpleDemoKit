@@ -18,8 +18,12 @@ public class ADKCommandSender {
 		openAccessory = acc;
 	}
 	
-	public void sendLEDcommand(byte target, byte value) {
-		openAccessory.sendCommand(LED_SERVO_COMMAND, target, value);
+	public void sendServoCommand(int target, int value) {
+		openAccessory.sendCommand(LED_SERVO_COMMAND, (byte) (target + 0x10), (byte)value);
+	}
+	
+	public void sendLEDcommand(int target, int color_index, int value) {
+		openAccessory.sendCommand(LED_SERVO_COMMAND, (byte) ((target - 1) * 3 + color_index), (byte)value);
 	}
 	
 	public void relay(byte target, byte value) {
@@ -35,12 +39,12 @@ public class ADKCommandSender {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Log.v(TAG, "thread started");
+				Log.v(TAG, "relay thread started");
 				isRelayRunning = true;
 
 				byte onoff = 0;
 				for (int i = 0; i < 10; i++) {
-					Log.v(TAG, "thread is running " + onoff);
+					Log.v(TAG, "relay thread is running " + onoff);
 					onoff = (byte) (onoff == 0 ? 1 : 0);
 					openAccessory.sendCommand((byte)3, (byte)0, onoff);
 					try {
@@ -60,10 +64,17 @@ public class ADKCommandSender {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Log.v(TAG, "thread started");
+				Log.v(TAG, "servo sequence thread started");
 				byte target = (byte) (0 + 0x10);
 				isServoRunning = true;
 
+				openAccessory.sendCommand(LED_SERVO_COMMAND, target, 100);
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				openAccessory.sendCommand(LED_SERVO_COMMAND, target, 127);
 				byte progress = 0;
 				for (int i = 0; i < 4; i++) {
 					Log.v(TAG, "thread is running " + progress);

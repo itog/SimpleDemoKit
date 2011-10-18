@@ -42,7 +42,19 @@ public class SimpleDemoKit extends Activity implements OnClickListener {
 			hideControls();
 		}				
 	}
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+	}
 
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+	}
+	
 	private void showControls() {
 		setContentView(R.layout.main);
 		inputLabel = (TextView) findViewById(R.id.inputLabel);

@@ -35,6 +35,7 @@
 	    android:layout_height="wrap_content" android:orientation="horizontal">
 	    <Button android:text="Relay" android:id="@+id/relayButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
     	<Button android:text="Servo" android:id="@+id/servoButton" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+    	<Button android:layout_height="wrap_content" android:text="Start Service" android:id="@+id/serviceButton" android:layout_width="wrap_content"></Button>
 	</LinearLayout>
 </LinearLayout>
 
