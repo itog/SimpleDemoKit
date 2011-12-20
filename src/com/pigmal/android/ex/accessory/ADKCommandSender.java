@@ -47,15 +47,11 @@ public class ADKCommandSender {
 	 * @param value
 	 */
 	private void sendCommand(byte command, byte target, int value) {
-		byte[] buffer = new byte[3];
 		if (value > 255)
 			value = 255;
 
-		buffer[0] = command;
-		buffer[1] = target;
-		buffer[2] = (byte) value;
-		if (buffer[1] != -1) {
-			openAccessory.write(buffer);
+		if (target != -1) {
+			openAccessory.write(command, target, (byte)value);
 		}
 	}
 

@@ -131,7 +131,7 @@ public class Accessory  implements Runnable {
 	}
 
 	
-	public void write(byte[] data) {
+	public void write(byte... data) {
 		if (mOutputStream != null) {
 			try {
 				mOutputStream.write(data);
