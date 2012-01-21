@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 
 //2.3.4
 import com.android.future.usb.UsbAccessory;
@@ -30,11 +31,9 @@ import com.android.future.usb.UsbManager;
 //3.1
 //import android.hardware.usb.UsbAccessory;
 //import android.hardware.usb.UsbManager;
-import com.pigmal.android.util.DebugUtil;
-import com.pigmal.android.util.Logger;
 
 public class AccessoryBaseActivity extends Activity{
-	//private static final String ACTION_USB_PERMISSION = "com.google.android.DemoKit.action.USB_PERMISSION";
+	private static final String TAG = "SimpleDemokit";
 	private static final String ACTION_USB_PERMISSION = "com.pigmal.android.SimpleDemoKit.action.USB_PERMISSION";
 
 	private PendingIntent mPermissionIntent;
@@ -56,8 +55,6 @@ public class AccessoryBaseActivity extends Activity{
 	private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			DebugUtil.trace();
-			
 			String action = intent.getAction();
 			if (ACTION_USB_PERMISSION.equals(action)) {
 				synchronized (this) {
@@ -69,7 +66,7 @@ public class AccessoryBaseActivity extends Activity{
 							onUsbAtached();
 						}
 					} else {
-						Logger.d("permission denied for accessory " + accessory);
+						Log.d(TAG, "permission denied for accessory " + accessory);
 					}
 					mPermissionRequestPending = false;
 				}
@@ -87,7 +84,6 @@ public class AccessoryBaseActivity extends Activity{
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-		DebugUtil.trace();
 		super.onCreate(savedInstanceState);
 
 		mUsbManager = UsbManager.getInstance(this); //2.3.4
@@ -141,7 +137,7 @@ public class AccessoryBaseActivity extends Activity{
 				}
 			}
 		} else {
-			Logger.d("mAccessory is null");
+			Log.d(TAG, "mAccessory is null");
 		}
 	}
 

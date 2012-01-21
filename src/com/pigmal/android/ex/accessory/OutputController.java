@@ -29,7 +29,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.pigmal.android.accessory.Accessory;
-import com.pigmal.android.util.Logger;
 
 /**
  * Control the user input and output to ADK
@@ -37,7 +36,7 @@ import com.pigmal.android.util.Logger;
  *
  */
 public class OutputController {
-	private static final String TAG = "OutputController";
+	private static final String TAG = "SimpleDemokit";
 	
 	private ToggleButton relayButtons[];
 	private SeekBar servoSeekBars[];
@@ -144,7 +143,7 @@ public class OutputController {
 	private OnSeekBarChangeListener ledListener = new OnSeekBarChangeListener() {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-			Logger.v("seekbar = " + seekBar);
+			Log.v(TAG, "seekbar = " + seekBar);
 			int i = (Integer)seekBar.getTag();
 			if (adkSender != null) {
 				adkSender.sendLEDcommand(Integer.valueOf((String)ledSpinner.getSelectedItem()), i, progress);

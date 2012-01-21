@@ -15,7 +15,7 @@
             </intent-filter>
         </activity>
 
-		<activity android:name="com.pigmal.android.accessory.UsbAccessoryActivity" android:label="DemoKit"
+		<activity android:name="com.pigmal.android.accessory.OnAccessoryAttachedActivity" android:label="SimpleDemoKit"
 			android:taskAffinity="" android:launchMode="singleInstance">
 			<intent-filter>
 				<action android:name="android.hardware.usb.action.USB_ACCESSORY_ATTACHED" />

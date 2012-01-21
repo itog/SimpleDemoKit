@@ -22,10 +22,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.os.ParcelFileDescriptor;
+import android.util.Log;
 
 import com.android.future.usb.UsbAccessory;
 import com.android.future.usb.UsbManager;
-import com.pigmal.android.util.Logger;
 
 /**
  * The class that provide basic functionality communicate Open Accessory devices
@@ -34,6 +34,8 @@ import com.pigmal.android.util.Logger;
  *
  */
 public class Accessory  implements Runnable {
+	private static final String TAG = "SimpleDemokit";
+	
 	private FileInputStream mInputStream;
 	private FileOutputStream mOutputStream;
 	private ParcelFileDescriptor mFileDescriptor;
@@ -60,11 +62,12 @@ public class Accessory  implements Runnable {
 			mOutputStream = new FileOutputStream(fd);
 			Thread thread = new Thread(null, this, "DemoKit");
 			thread.start();
-			Logger.d("accessory opened");
+			Log.d(TAG, "accessory opened");
 			//enableControls(true);
 			ret = true;
 		} else {
-			Logger.d("accessory open fail");
+
+			Log.d(TAG, "accessory open fail");
 		}
 		return ret;
 	}

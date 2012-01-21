@@ -42,7 +42,7 @@ import com.pigmal.android.ex.accessory.SimpleDemoKit;
 /* This Activity does nothing but receive USB_DEVICE_ATTACHED events from the
  * USB service and springboards to the main Gallery activity
  */
-public final class UsbAccessoryActivity extends Activity {
+public final class OnAccessoryAttachedActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

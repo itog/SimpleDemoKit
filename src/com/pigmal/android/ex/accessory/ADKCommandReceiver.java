@@ -18,11 +18,10 @@ package com.pigmal.android.ex.accessory;
 
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.widget.SeekBar;
 
 import com.pigmal.android.accessory.AccessoryListener;
-import com.pigmal.android.util.DebugUtil;
-import com.pigmal.android.util.Logger;
 
 /**
  * Receive message from ADK and display on the device display
@@ -30,6 +29,8 @@ import com.pigmal.android.util.Logger;
  *
  */
 public class ADKCommandReceiver implements AccessoryListener {
+	private static final String TAG = "SimpleDemokit";
+	
 	/**
 	 * message ids defined in RT-ADK firmware
 	 */
@@ -234,7 +235,7 @@ public class ADKCommandReceiver implements AccessoryListener {
 				break;
 
 			default:
-				Logger.d("unknown msg: " + buffer[i]);
+				Log.d(TAG, "unknown msg: " + buffer[i]);
 				i = len;
 				break;
 			}

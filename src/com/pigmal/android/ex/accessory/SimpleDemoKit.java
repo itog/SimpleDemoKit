@@ -18,6 +18,7 @@ package com.pigmal.android.ex.accessory;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +27,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.pigmal.android.accessory.AccessoryBaseActivity;
-import com.pigmal.android.util.Logger;
-
 
 public class SimpleDemoKit extends AccessoryBaseActivity implements OnClickListener {
+	private static final String TAG = "SimpleDemokit";
+	
 	private ADKCommandReceiver mReceiver;
 	
 	private TextView inputLabel;
@@ -131,13 +132,13 @@ public class SimpleDemoKit extends AccessoryBaseActivity implements OnClickListe
 	
 	@Override
 	protected void onUsbAtached() {
-		Logger.v("onUsbAtached");
+		Log.v(TAG, "onUsbAtached");
 		showControls();
 	}
 	
 	@Override
 	protected void onUsbDetached() {
-		Logger.v("onUsbDetached");
+		Log.v(TAG, "onUsbDetached");
 		hideControls();
 	}
 	
